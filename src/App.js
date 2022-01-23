@@ -5,7 +5,7 @@ import './App.css';
 export default function App() {
 
   const wave = () => {
-    
+    console.log("👋");
   }
   
   return (
@@ -17,7 +17,7 @@ export default function App() {
         </div>
 
         <div className="bio">
-        I am farza and I worked on self-driving cars so that's pretty cool right? Connect your Ethereum wallet and wave at me!
+         <h3> yoda, i'm.</h3>
         </div>
 
         <button className="waveButton" onClick={wave}>
