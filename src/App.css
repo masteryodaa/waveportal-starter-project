@@ -1,11 +1,27 @@
+body {
+  background: #acb6e5; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #86fde8,
+    #acb6e5
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #86fde8,
+    #acb6e5
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
 .mainContainer {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  margin-top: 64px;
+  /* margin-top: 64px; */
 }
 
 .dataContainer {
+  margin: 20px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,6 +32,12 @@
   text-align: center;
   font-size: 32px;
   font-weight: 600;
+  align-items: center;
+}
+
+#png {
+  width: 100px;
+  height: 100px;
 }
 
 .bio {
@@ -24,11 +46,92 @@
   margin-top: 16px;
 }
 
+.account {
+  text-align: center;
+}
+
 .waveButton {
   cursor: pointer;
-  margin-top: 16px;
+  margin: 16px;
   padding: 8px;
   border: 0;
   border-radius: 5px;
+}
+
+.waveContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.waveContent {
+  margin: 50px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-gap: 25px;
+  place-items: center;
+}
+
+.wave {
   
+  width: 400px;
+  padding: 10px;
+  border: 1px solid #eaeaea;  
+
+  border-radius: 5px;
+
+  background: #FFF3B0; /* fallback for old browsers */
+  
+}
+
+.wave-address {
+  font: 22px "Dongle";
+  text-align: center;
+  color: black;
+}
+
+.wave-message {
+  font: 22px "Dongle";
+  text-align: center;
+  color: black;
+}
+
+.wave-timestamp {
+  font: 22px "Dongle";
+  text-align: center;
+  color: black;
+}
+
+#input {
+  width: 100%;
+  height: 100%;
+  margin-top: 20px;
+  border: 0;
+  background-color: transparent;
+  font-size: 24px;
+  font-weight: 600;
+  color: red;
+  text-align: center;
+  outline: none;
+}
+
+#input:focus {
+  outline: none;
+  border-bottom: 0.1px solid black;
+}
+
+.txnHash {
+  font-size: 14px;
+  font-weight: 600;
+  color: gray;
+  text-align: center;
+}
+
+.link,
+.link:active,
+.link:visited {
+  text-decoration: none;
+  color: gray;
 }

@@ -1,29 +1,10 @@
-import * as React from "react";
-// import { ethers } from "ethers";
-import './App.css';
+import React from 'react';
+import Wave from './Wave';
 
-export default function App() {
-
-  const wave = () => {
-    console.log("👋");
-  }
-  
-  return (
-    <div className="mainContainer">
-
-      <div className="dataContainer">
-        <div className="header">
-        <span role="img" aria-label="wave">👋</span> Hey there!
-        </div>
-
-        <div className="bio">
-         <h3> yoda, i'm.</h3>
-        </div>
-
-        <button className="waveButton" onClick={wave}>
-          Wave at Me
-        </button>
-      </div>
-    </div>
-  );
+function App() {
+  return <div>
+    <Wave />
+  </div>;
 }
+
+export default App;
