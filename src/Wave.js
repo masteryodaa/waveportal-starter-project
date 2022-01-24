@@ -6,7 +6,7 @@ import icon from './yoda.png'
 
 function Wave() {
 
-    const [currentAccount, setCurrentAccount] = useState("");
+    const [currentAccount, setCurrentAccount] = useState(null);
 
     const [allWaves, setAllWaves] = useState([]);
     const contractAddress = "0x303847a36807BD36415eCB27679FCE1267FBa318";
@@ -15,6 +15,7 @@ function Wave() {
     const [msgValue, setMsgValue] = useState("");
     const [sending, setSending] = useState(false);
     const [txnHash, setTxnHash] = useState("");
+    const [connectClass, setConnectClass] = useState("");
 
     const msgHandle = (e) => {
         setMsgValue(e.target.value);
@@ -34,23 +35,23 @@ function Wave() {
 
     }
 
-    const getAllWaves = useCallback( 
+    const getAllWaves = useCallback(
         async () => {
             try {
                 const { ethereum } = window;
                 if (ethereum) {
                     // const provider = new ethers.providers.Web3Provider(ethereum);
                     const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
-    
+
                     // const signer = provider.getSigner();
                     const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, provider);
-    
+
                     /*
                      * Call the getAllWaves method from your Smart Contract
                      */
                     const waves = await wavePortalContract.getAllWaves();
-    
-    
+
+
                     /*
                      * We only need address, timestamp, and message in our UI so let's
                      * pick those out
@@ -63,7 +64,7 @@ function Wave() {
                             message: wave.message
                         });
                     });
-    
+
                     /*
                      * Store our data in React State
                      */
@@ -75,35 +76,40 @@ function Wave() {
                 console.log(error);
             }
         }, [contractAbi]
-    )    
-    
-    
-    const waveMe = async () => {
+    )
+
+
+    const waveMe = () => {
 
         console.log(msgValue);
+        
 
-        setSending(true);
+        const get = async() => {
 
-        try {
-            const { ethereum } = window;
+            setSending(true);
 
-
-            if (ethereum) {
-
-                const provider = new ethers.providers.Web3Provider(ethereum);
-
-                // const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
-
-                const signer = provider.getSigner();
-
-                const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer);
+            try {
 
 
-                let waveTxn = await wavePortalContract.wave(msgValue);
-                console.log('sending...', waveTxn.hash);
-                setTxnHash(waveTxn.hash);
+                const { ethereum } = window;
 
-                await waveTxn.wait().then(() => {
+
+                if (ethereum) {
+
+                    const provider = new ethers.providers.Web3Provider(ethereum);
+
+                    // const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
+
+                    const signer = provider.getSigner();
+
+                    const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer);
+
+
+                    let waveTxn = await wavePortalContract.wave(msgValue);
+                    console.log('sending...', waveTxn.hash);
+                    setTxnHash(waveTxn.hash);
+
+                    await waveTxn.wait().then(() => {
                         console.log('done', waveTxn.hash);
                         setSending(false);
                     }).catch(error => {
@@ -111,17 +117,32 @@ function Wave() {
                         setSending(false);
                     });
 
-                getAllWaves();
+                    getAllWaves();
+                }
             }
+            catch (error) {
+                console.log("Error:", error);
+                setSending(false);
+            }
+
         }
-        catch (error) {
-            console.log("Error:", error);
-            setSending(false);
+
+        if(currentAccount){
+            get();
         }
+        else{
+            setConnectClass("wallet");
+            setTimeout(() => {
+                setConnectClass("");
+            }, 1000);
+        }
+        
+
+        
     }
 
     useEffect(() => {
-        connectMetamask();
+        // connectMetamask();
         getAllWaves();
     }, [getAllWaves]);
 
@@ -139,7 +160,7 @@ function Wave() {
 
 
                 {!currentAccount ?
-                    <button className="waveButton" onClick={connectMetamask}>
+                    <button className={`waveButton ${connectClass}`} onClick={connectMetamask}>
                         Connect Wallet
                     </button> :
                     <h4 className='account'>{currentAccount}</h4>
