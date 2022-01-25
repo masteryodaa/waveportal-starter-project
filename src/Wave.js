@@ -3,7 +3,8 @@ import abi from "./Contract.json";
 import { ethers } from "ethers";
 import detectEthereumProvider from '@metamask/detect-provider';
 import './App.css'
-import icon from './yoda.png'
+// import icon from './yoda.png'
+import icon from './babyyoda.gif'
 import loader from './loader.gif';
 
 function Wave() {
@@ -63,7 +64,7 @@ function Wave() {
             try {
                 const { ethereum } = window;    
                 if (ethereum) {
-                    
+
                     // const provider = new ethers.providers.Web3Provider(ethereum);
                     const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
 
