@@ -44,11 +44,12 @@ body {
 
 .header {
   text-align: center;
-  /* font-size: 24px; */
-  font-family: 'Mochiy Pop P One', sans-serif;
-  /* font-weight: bold; */
+  font-size: 30px;
+  font-family: 'Dongle','Mochiy Pop P One', sans-serif;
+  font-weight: bold;
   align-items: center;
   margin: 20px 0 0 0;
+  color: #000;
 }
 
 .head{
@@ -95,17 +96,41 @@ body {
   }
 }
 
+/* // "react": "^16.12.0", */
+
+
 .account {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+  margin: 16px;
+  border-radius: 20px;
+  background-color: #f2f2f2;
+  padding: 5px;
+  font-size: 8px;
+  font-family: 'Mochiy Pop P One', sans-serif;
+}
+
+.pfp{
+  width:15px;
+  height:15px;
+  margin: 0 5px;
 }
 
 .waveButton {
   cursor: pointer;
   margin: 16px;
-  padding: 8px;
+  padding: 8px 0;
+  /* font-weight: bold; */
   border: 0;
   border-radius: 5px;
   width: 200px;
+}
+
+.sending{
+  padding: 2px;
+  margin: 15px;
 }
 
 .spinner {
@@ -171,7 +196,7 @@ body {
   font-weight: 600;
   /* font-family: 'Dongle','Mochiy Pop P One', sans-serif; */
   font-family: 'Balsamiq Sans', cursive;
-  color : #283618;
+  color : #F33A00;
   text-align: center;
   outline: none;
 }

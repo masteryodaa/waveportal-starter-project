@@ -14,7 +14,9 @@ function Wave() {
     const [loading, setLoading] = useState(false);
 
     const [allWaves, setAllWaves] = useState([]);
-    const contractAddress = "0x303847a36807BD36415eCB27679FCE1267FBa318";
+    // const contractAddress = "0x303847a36807BD36415eCB27679FCE1267FBa318";//kovan
+    // const contractAddress = "0x5a443704dd4B594B382c22a083e2BD3090A6feF3"; //matic testnet
+    const contractAddress = "0xbD41C76af7551c6Bc9dBEB8f1915e8F64ec24334"; //kovan new contract
     const contractAbi = abi.abi;
 
     const [msgValue, setMsgValue] = useState("");
@@ -62,7 +64,7 @@ function Wave() {
             console.log("Getting all waves");
 
             try {
-                const { ethereum } = window;    
+                const { ethereum } = window;
                 if (ethereum) {
 
                     // const provider = new ethers.providers.Web3Provider(ethereum);
@@ -99,9 +101,9 @@ function Wave() {
     const waveMe = () => {
 
         console.log(msgValue);
-        
 
-        const get = async() => {
+
+        const get = async () => {
 
             setSending(true);
 
@@ -122,16 +124,19 @@ function Wave() {
                     const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 
-                    let waveTxn = await wavePortalContract.wave(msgValue, {gasLimit: 1000000});
+                    let waveTxn = await wavePortalContract.wave(msgValue, { gasLimit: 1000000 });
                     console.log('sending...', waveTxn.hash);
                     setTxnHash(waveTxn.hash);
 
                     await waveTxn.wait().then(() => {
                         console.log('done', waveTxn.hash);
                         setSending(false);
+                        setMsgValue("");
+
                     }).catch(error => {
                         console.log('txn error', error);
                         setSending(false);
+                        setMsgValue("");
                     });
 
                     getAllWaves();
@@ -144,18 +149,18 @@ function Wave() {
 
         }
 
-        if(currentAccount){
+        if (currentAccount) {
             get();
         }
-        else{
+        else {
             setConnectClass("wallet");
             setTimeout(() => {
                 setConnectClass("");
             }, 1000);
         }
-        
 
-        
+
+
     }
 
     useEffect(() => {
@@ -167,39 +172,43 @@ function Wave() {
     return (
         <div className="mainContainer">
             <div className="dataContainer">
-                
+
 
                 <div className="head">
                     <img src={icon} id='png' alt="yoda" />
-                    <div className="header">send waves to the yoda community</div>
+                    <div className="header">to the yoda community, send waves..</div>
                 </div>
 
 
-                
+
 
                 {
-                   loading ? <button disabled className={`spinner ${connectClass}`}>
-                       <img src={loader} alt="loading" width="25px" height="25px" />
-                   </button> :
+                    loading ? <button disabled className={`spinner ${connectClass}`}>
+                        <img src={loader} alt="loading" width="25px" height="25px" />
+                    </button> :
 
-                   (
-                    metamask ? 
-                    
-                    (!currentAccount ?
-                        <button className={`waveButton ${connectClass}`} onClick={connectMetamask}>
-                            Connect Wallet
-                        </button> :
-                        <h4 className='account'>{currentAccount}</h4>
-                    )
-                    
-                    : <h4 className="account">Please Install Metamask</h4>
-                   )
+                        (
+                            metamask ?
+
+                                (!currentAccount ?
+                                    <button className={`waveButton ${connectClass}`} onClick={connectMetamask}>
+                                        Connect Kovan Wallet
+                                    </button> :
+                                    <div className='account'>
+                                        <div className="pfp"><img src={`https://avatars.dicebear.com/api/identicon/${currentAccount}.svg`} alt="pfp" /></div>
+                                        <div>{currentAccount}</div>
+                                    </div>
+                                )
+
+                                : <h4 className="account">Please Install Metamask</h4>
+                        )
                 }
 
                 <input type="text" id='input' onChange={msgHandle} value={msgValue} placeholder="type your message here" />
 
                 {
-                    sending ? <button className="waveButton">Sending...</button> :
+                    sending ? <button className="waveButton sending" disabled><img src={loader} alt="loading" width="25px" height="25px" />
+                    </button> :
                         <button className="waveButton" onClick={waveMe}>
                             Wave <span role='img' aria-label="wave" >👋</span>
                         </button>
@@ -241,14 +250,14 @@ function Wave() {
                 </div>
 
                 <div className="footer">
-                <div className="footer-text">
-                    <a className="footer-link" href="https://twitter.com/masteryoda_69" target="_blank" rel="noopener noreferrer">@masteryoda_69</a>
+                    <div className="footer-text">
+                        <a className="footer-link" href="https://twitter.com/masteryoda_69" target="_blank" rel="noopener noreferrer">@masteryoda_69</a>
+                    </div>
                 </div>
-            </div>
 
             </div>
 
-            
+
 
         </div>
 
