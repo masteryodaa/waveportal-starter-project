@@ -4,10 +4,13 @@ import { ethers } from "ethers";
 import detectEthereumProvider from '@metamask/detect-provider';
 import './App.css'
 import icon from './yoda.png'
+import loader from './loader.gif';
 
 function Wave() {
 
     const [currentAccount, setCurrentAccount] = useState(null);
+    const [metamask, setMetamask] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const [allWaves, setAllWaves] = useState([]);
     const contractAddress = "0x303847a36807BD36415eCB27679FCE1267FBa318";
@@ -24,43 +27,53 @@ function Wave() {
 
     const connectMetamask = async () => {
 
+        setLoading(true);
+
         let provider = await detectEthereumProvider();
 
-        if (provider) {
-            console.log("Metamask is available");
-            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-            console.log("Found an account:", accounts[0]);
-            setCurrentAccount(accounts[0]);
+        try {
+
+            if (provider) {
+                console.log("Metamask is available");
+                const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+                console.log("Found an account:", accounts[0]);
+                setCurrentAccount(accounts[0]);
+                setLoading(false);
+                // setMetamask();
+            }
+            else {
+                console.log("Metamask is not available");
+                setMetamask(false);
+                setLoading(false);
+            }
+
         }
-        else {
-            console.log("Metamask is not available");
-            setCurrentAccount('Please connect Metamask');
+        catch (err) {
+            console.log("Error:", err);
+            setMetamask(false);
+            setLoading(false);
         }
 
     }
 
     const getAllWaves = useCallback(
         async () => {
+            console.log("Getting all waves");
 
             try {
                 const { ethereum } = window;    
                 if (ethereum) {
-                    const provider = new ethers.providers.Web3Provider(ethereum);
-                    // const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
+                    
+                    // const provider = new ethers.providers.Web3Provider(ethereum);
+                    const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
 
                     // const signer = provider.getSigner();
                     const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, provider);
 
-                    /*
-                     * Call the getAllWaves method from your Smart Contract
-                     */
+
                     const waves = await wavePortalContract.getAllWaves();
 
 
-                    /*
-                     * We only need address, timestamp, and message in our UI so let's
-                     * pick those out
-                     */
                     let wavesCleaned = [];
                     waves.forEach(wave => {
                         wavesCleaned.unshift({
@@ -70,10 +83,8 @@ function Wave() {
                         });
                     });
 
-                    /*
-                     * Store our data in React State
-                     */
                     setAllWaves(wavesCleaned);
+
                 } else {
                     console.log("Ethereum object doesn't exist!")
                 }
@@ -155,21 +166,33 @@ function Wave() {
     return (
         <div className="mainContainer">
             <div className="dataContainer">
-                {/* <div className="header">
-                     <div>Hey there!</div>
-                </div> */}
+                
 
-                <div className="header">
+                <div className="head">
                     <img src={icon} id='png' alt="yoda" />
-                    <div>yoda, i am.</div>
+                    <div className="header">send waves to the yoda community</div>
                 </div>
 
 
-                {!currentAccount ?
-                    <button className={`waveButton ${connectClass}`} onClick={connectMetamask}>
-                        Connect Wallet
-                    </button> :
-                    <h4 className='account'>{currentAccount}</h4>
+                
+
+                {
+                   loading ? <button disabled className={`spinner ${connectClass}`}>
+                       <img src={loader} alt="loading" width="25px" height="25px" />
+                   </button> :
+
+                   (
+                    metamask ? 
+                    
+                    (!currentAccount ?
+                        <button className={`waveButton ${connectClass}`} onClick={connectMetamask}>
+                            Connect Wallet
+                        </button> :
+                        <h4 className='account'>{currentAccount}</h4>
+                    )
+                    
+                    : <h4 className="account">Please Install Metamask</h4>
+                   )
                 }
 
                 <input type="text" id='input' onChange={msgHandle} value={msgValue} placeholder="type your message here" />
