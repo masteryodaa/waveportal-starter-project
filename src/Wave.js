@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import abi from "./Contract.json";
 import { ethers } from "ethers";
+import detectEthereumProvider from '@metamask/detect-provider';
 import './App.css'
 import icon from './yoda.png'
 
@@ -23,25 +24,29 @@ function Wave() {
 
     const connectMetamask = async () => {
 
-        if (!window.ethereum) {
-            console.log("Metamask is not available");
-        }
-        else {
+        let provider = await detectEthereumProvider();
+
+        if (provider) {
             console.log("Metamask is available");
             const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
             console.log("Found an account:", accounts[0]);
             setCurrentAccount(accounts[0]);
+        }
+        else {
+            console.log("Metamask is not available");
+            setCurrentAccount('Please connect Metamask');
         }
 
     }
 
     const getAllWaves = useCallback(
         async () => {
+
             try {
-                const { ethereum } = window;
+                const { ethereum } = window;    
                 if (ethereum) {
-                    // const provider = new ethers.providers.Web3Provider(ethereum);
-                    const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
+                    const provider = new ethers.providers.Web3Provider(ethereum);
+                    // const provider = new ethers.providers.AlchemyProvider('kovan', 'bJ-98LmpdxJRG8XZkLVgJPHyjakMoJmf'); // Alchemy api
 
                     // const signer = provider.getSigner();
                     const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, provider);
@@ -105,7 +110,7 @@ function Wave() {
                     const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 
-                    let waveTxn = await wavePortalContract.wave(msgValue);
+                    let waveTxn = await wavePortalContract.wave(msgValue, {gasLimit: 1000000});
                     console.log('sending...', waveTxn.hash);
                     setTxnHash(waveTxn.hash);
 
@@ -144,6 +149,7 @@ function Wave() {
     useEffect(() => {
         // connectMetamask();
         getAllWaves();
+        console.log("getAllWaves called");
     }, [getAllWaves]);
 
     return (
