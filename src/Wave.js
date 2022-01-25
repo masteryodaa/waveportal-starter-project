@@ -240,9 +240,15 @@ function Wave() {
 
                 </div>
 
-
+                <div className="footer">
+                <div className="footer-text">
+                    <a className="footer-link" href="https://twitter.com/masteryoda_69" target="_blank" rel="noopener noreferrer">@masteryoda_69</a>
+                </div>
+            </div>
 
             </div>
+
+            
 
         </div>
 
